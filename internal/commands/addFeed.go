@@ -10,12 +10,12 @@ import (
 )
 
 func HandlerAddFeed(s *State, cmd Command, user database.User) error {
-	if len(cmd.Args) != 2 {
-		return fmt.Errorf("error: command expects name and url arguments")
+	if len(cmd.Args) != 1 {
+		return fmt.Errorf("error: command expects url argument")
 	}
 	// get props form args
-	name := cmd.Args[0]
-	url := cmd.Args[1]
+	name := user.Name
+	url := cmd.Args[0]
 	// create feed
 	feed, err := s.Db.CreateFeed(context.Background(), database.CreateFeedParams{
 		ID:        uuid.New(),
