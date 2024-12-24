@@ -9,19 +9,14 @@ import (
 	"github.com/google/uuid"
 )
 
-func HandlerAddFeed(s *State, cmd Command) error {
+func HandlerAddFeed(s *State, cmd Command, user database.User) error {
 	if len(cmd.Args) != 2 {
 		return fmt.Errorf("error: command expects name and url arguments")
 	}
-
+	// get props form args
 	name := cmd.Args[0]
 	url := cmd.Args[1]
-
-	user, err := s.Db.GetUser(context.Background(), s.Config.Current_user_name)
-	if err != nil {
-		return fmt.Errorf("error getting current user: %w", err)
-	}
-
+	// create feed
 	feed, err := s.Db.CreateFeed(context.Background(), database.CreateFeedParams{
 		ID:        uuid.New(),
 		CreatedAt: time.Now(),
@@ -33,8 +28,19 @@ func HandlerAddFeed(s *State, cmd Command) error {
 	if err != nil {
 		return fmt.Errorf("error creating feed: %w", err)
 	}
+	// create follow for feed
+	follow, err := s.Db.CreateFeedFollow(context.Background(), database.CreateFeedFollowParams{
+		ID:        uuid.New(),
+		UpdatedAt: time.Now(),
+		FeedID:    feed.ID,
+		UserID:    feed.UserID,
+	})
+	if err != nil {
+		return fmt.Errorf("error creating follow for created feed: %w", err)
+	}
 
 	fmt.Println(feed)
+	fmt.Println(follow)
 
 	return nil
 }

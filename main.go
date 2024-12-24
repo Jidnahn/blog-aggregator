@@ -8,6 +8,7 @@ import (
 	"github.com/Jidnahn/blog-aggregator/internal/commands"
 	"github.com/Jidnahn/blog-aggregator/internal/config"
 	"github.com/Jidnahn/blog-aggregator/internal/database"
+	"github.com/Jidnahn/blog-aggregator/internal/middlewares"
 
 	_ "github.com/lib/pq"
 )
@@ -41,8 +42,11 @@ func main() {
 	cmds.Register("reset", commands.HandlerReset)
 	cmds.Register("users", commands.HandlerUsers)
 	cmds.Register("agg", commands.HanlderAgg)
-	cmds.Register("addfeed", commands.HandlerAddFeed)
+	cmds.Register("addfeed", middlewares.MiddlewareLoggedIn(commands.HandlerAddFeed))
 	cmds.Register("feeds", commands.HandlerFeeds)
+	cmds.Register("follow", middlewares.MiddlewareLoggedIn(commands.HandlerFollow))
+	cmds.Register("following", middlewares.MiddlewareLoggedIn(commands.HandlerFollowing))
+	cmds.Register("unfollow", middlewares.MiddlewareLoggedIn(commands.HandlerUnfollow))
 	// create command
 	cmdName := args[1]
 	loginCmd := commands.Command{
