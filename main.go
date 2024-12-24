@@ -47,6 +47,7 @@ func main() {
 	cmds.Register("follow", middlewares.MiddlewareLoggedIn(commands.HandlerFollow))
 	cmds.Register("following", middlewares.MiddlewareLoggedIn(commands.HandlerFollowing))
 	cmds.Register("unfollow", middlewares.MiddlewareLoggedIn(commands.HandlerUnfollow))
+	cmds.Register("browse", middlewares.MiddlewareLoggedIn(commands.HandlerBrowse))
 	// create command
 	cmdName := args[1]
 	loginCmd := commands.Command{
